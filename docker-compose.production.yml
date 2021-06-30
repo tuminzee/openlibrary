@@ -63,7 +63,6 @@ services:
         max-size: "512m"
         max-file: "4"
     secrets:
-      - petabox_seed
       # Needed by default-docker.conf
       - ssl_certificate
       - ssl_certificate_key
@@ -145,7 +144,6 @@ services:
         max-size: "512m"
         max-file: "4"
     secrets:
-      - petabox_seed
       - ssl_certificate
       - ssl_certificate_key
 
@@ -166,8 +164,6 @@ services:
       - 7000:7000
     networks:
       - webnet
-    secrets:
-      - petabox_seed
 
   affiliate-server:
     profiles: ["ol-home0"]
@@ -244,11 +240,8 @@ services:
       - dbnet
 
 # secrets mounted to /run/secrets/
-# e.g. /run/secrets/petabox_seed
+# e.g. /run/secrets/ia_db_pw_file
 secrets:
-    petabox_seed:
-      file: /opt/.petabox/seed
-
     ia_db_pw_file:
       file: /opt/.petabox/dbserver
 
