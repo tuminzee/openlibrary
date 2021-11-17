@@ -15,7 +15,7 @@ from datetime import timedelta
 import logging
 import requests
 
-# Add openlibrary into our path so we can process config + batch functions                                                
+# Add openlibrary into our path so we can process config + batch functions
 sys.path.insert(0, os.path.abspath(os.path.join(os.sep, 'openlibrary')))
 from infogami import config
 from openlibrary.config import load_config
@@ -93,8 +93,6 @@ class Biblio:
 
         # Assert importable                                                                                                                                                                            
         for field in self.REQUIRED_FIELDS + ['isbn_13']:
-            if not getattr(self, field):
-                logger.info(f"Field {field} {data[20][:4]} {data[19][:4]}")
             assert getattr(self, field)
 
     @staticmethod
