@@ -17,12 +17,13 @@ import requests
 
 # Add openlibrary into our path so we can process config + batch functions                                                
 sys.path.insert(0, os.path.abspath(os.path.join(os.sep, 'openlibrary')))
+from infogami import config
 from openlibrary.config import load_config
 load_config(
         os.path.abspath(os.path.join(
                     os.sep, 'olsystem', 'etc', 'openlibrary.yml')))
 from openlibrary.core.imports import Batch
-from infogami import config
+
 
 logger = logging.getLogger("openlibrary.importer.bwb")
 
@@ -90,9 +91,10 @@ class Biblio:
         # e.g. "5.4 x 4.7 x 0.2 inches"
         self.length, self.width, self.height = data[40:43]
 
-        # Assert importable
-        assert self.isbn_13
-        for field in self.REQUIRED_FIELDS:
+        # Assert importable                                                                                                                                                                            
+        for field in self.REQUIRED_FIELDS + ['isbn_13']:
+            if not getattr(self, field):
+                logger.info(f"Field {field} {data[20][:4]} {data[19][:4]}")
             assert getattr(self, field)
 
     @staticmethod
@@ -181,6 +183,8 @@ def batch_import(path, batch, batch_size=5000):
                     book_items.append(csv_to_ol_json_item(line))
                 except UnicodeDecodeError:
                     pass
+                except AssertionError as e:
+                    logger.info(f"Error: {e} from {line}")
 
                 # If we have enough items, submit a batch
                 if not ((line_num + 1) % batch_size):
